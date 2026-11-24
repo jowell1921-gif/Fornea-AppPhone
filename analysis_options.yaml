@@ -1,0 +1,52 @@
+# Análisis estático de FORNEA.
+# Base: reglas recomendadas de Flutter (flutter_lints), más modos estrictos y reglas
+# adicionales elegidas para cumplir las normas de calidad del proyecto (CLAUDE.md §6).
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  language:
+    # Prohíben que `dynamic` se cuele sin querer: obligan a declarar tipos al leer JSON,
+    # al crear colecciones y al inferir tipos genéricos.
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+
+linter:
+  rules:
+    # Tipos y dynamic
+    - avoid_dynamic_calls
+    - always_declare_return_types
+    - type_annotate_public_apis
+
+    # Imports: siempre `package:fornea/...` y ordenados, para que sean uniformes
+    - always_use_package_imports
+    - directives_ordering
+
+    # Rendimiento: widgets constantes que Flutter no necesita reconstruir
+    - prefer_const_constructors
+    - prefer_const_declarations
+    - prefer_const_literals_to_create_immutables
+    - use_colored_box
+    - use_decorated_box
+
+    # Asincronía y recursos: ningún Future olvidado ni suscripción sin cerrar
+    - unawaited_futures
+    - avoid_void_async
+    - cancel_subscriptions
+    - close_sinks
+
+    # Errores
+    - only_throw_errors
+    - throw_in_finally
+
+    # Estilo
+    - prefer_single_quotes
+    - prefer_final_locals
+    - prefer_final_in_for_each
+    - sort_constructors_first
+    - unnecessary_lambdas
+    - unnecessary_parenthesis

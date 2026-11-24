@@ -1,0 +1,93 @@
+# Dependencias
+node_modules/
+
+# Compilación
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Pruebas
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# Variables de entorno (se permite únicamente la plantilla)
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Cachés y temporales
+.cache/
+.eslintcache
+.turbo/
+tmp/
+*.tmp
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE y configuración personal
+.vscode/
+.idea/
+*.swp
+
+# Despliegue local
+.vercel/
+
+# Datos locales de Docker
+docker-data/
+
+# Imágenes originales de gran tamaño (se versionan solo las optimizadas de frontend/public/image)
+frontend/assets-originals/
+
+# Instrucciones internas de trabajo (no forman parte del producto)
+CLAUDE.md
+AGENTS.md
+.claude/
+
+# Cliente de Prisma generado (se crea con npm run db:generate)
+backend/src/generated/
+
+# Copias de seguridad de la base de datos (contienen datos personales: nunca a Git)
+backups/
+*.dump
+
+# ── Flutter / Dart (añadido en la Fase 3 a partir de la plantilla oficial de Flutter) ──
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/coverage/
+**/doc/api/
+migrate_working_dir/
+.widget_preview/
+
+# Archivos de proyecto de IntelliJ / Android Studio
+*.iml
+*.ipr
+*.iws
+
+# Símbolos y mapas de ofuscación (se generan al compilar en modo release)
+app.*.symbols
+app.*.map.json
+
+# Artefactos de Android Studio
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# iOS / Xcode
+**/ios/Flutter/.last_build_id
+.swiftpm/
+.build/
