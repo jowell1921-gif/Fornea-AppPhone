@@ -18,3 +18,31 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  # Licencias OFL de las tipografías (se muestran en la pantalla de licencias).
+  assets:
+    - assets/fonts/inter/OFL.txt
+    - assets/fonts/barlow_condensed/OFL.txt
+
+  # Tipografías de marca incluidas en la app (no se descargan al abrirla).
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/inter/Inter-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/inter/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/inter/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/inter/Inter-Bold.ttf
+          weight: 700
+    - family: BarlowCondensed
+      fonts:
+        - asset: assets/fonts/barlow_condensed/BarlowCondensed-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/barlow_condensed/BarlowCondensed-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/barlow_condensed/BarlowCondensed-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/barlow_condensed/BarlowCondensed-ExtraBold.ttf
+          weight: 800
