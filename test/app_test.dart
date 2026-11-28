@@ -7,9 +7,11 @@ import 'package:material_ui/material_ui.dart';
 
 import 'helpers/fake_api.dart';
 import 'helpers/memory_cart_storage.dart';
+import 'helpers/reduce_motion.dart';
 
 /// Arranca la app completa, igual que `main.dart`, pero sin red real.
 Future<void> pumpApp(WidgetTester tester) async {
+  reduceMotion(tester);
   await tester.pumpWidget(
     ProviderScope(
       retry: (_, _) => null,

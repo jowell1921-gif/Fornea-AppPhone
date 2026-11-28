@@ -8,6 +8,7 @@ import 'package:fornea/features/cart/presentation/cart_screen.dart';
 import 'package:fornea/features/catalog/presentation/catalog_screen.dart';
 import 'package:fornea/features/catalog/presentation/product_detail/product_detail_screen.dart';
 import 'package:fornea/features/home/presentation/home_screen.dart';
+import 'package:fornea/features/loyalty/presentation/club_screen.dart';
 import 'package:fornea/features/orders/presentation/orders_screen.dart';
 import 'package:fornea/features/profile/presentation/profile_screen.dart';
 import 'package:go_router/go_router.dart';
@@ -32,6 +33,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           _tab(AppRoutes.orders, const OrdersScreen()),
           _tab(AppRoutes.profile, const ProfileScreen()),
         ],
+      ),
+      GoRoute(
+        path: AppRoutes.club,
+        builder: (context, state) => const ClubScreen(),
       ),
       GoRoute(
         path: AppRoutes.productPattern,

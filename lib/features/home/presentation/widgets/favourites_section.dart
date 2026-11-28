@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fornea/core/motion/scroll_reveal.dart';
 import 'package:fornea/core/navigation/app_routes.dart';
 import 'package:fornea/core/network/error_messages.dart';
 import 'package:fornea/core/theme/app_spacing.dart';
@@ -25,9 +26,11 @@ class FavouritesSection extends ConsumerWidget {
           for (final product in products)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-              child: ProductCard.fromProduct(
-                product,
-                onTap: () => context.push(AppRoutes.product(product.id)),
+              child: ScrollReveal(
+                child: ProductCard.fromProduct(
+                  product,
+                  onTap: () => context.push(AppRoutes.product(product.id)),
+                ),
               ),
             ),
         ],

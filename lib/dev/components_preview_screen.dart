@@ -3,6 +3,7 @@ import 'package:fornea/core/theme/app_spacing.dart';
 import 'package:fornea/core/widgets/error_view.dart';
 import 'package:fornea/core/widgets/info_tag.dart';
 import 'package:fornea/core/widgets/loading_view.dart';
+import 'package:fornea/dev/sample_data_banner.dart';
 import 'package:fornea/features/catalog/presentation/widgets/product_card.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -27,7 +28,7 @@ class ComponentsPreviewScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(AppSpacing.md),
         children: [
-          const _SampleDataBanner(),
+          const SampleDataBanner(),
           section('Tarjeta de producto'),
           ProductCard(
             name: 'Pizza de ejemplo',
@@ -71,33 +72,6 @@ class ComponentsPreviewScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _SampleDataBanner extends StatelessWidget {
-  const _SampleDataBanner();
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = Theme.of(context).colorScheme;
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: colors.tertiary,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.sm + 4),
-        child: Text(
-          'DATOS DE EJEMPLO · solo visible en modo desarrollo',
-          style: TextStyle(
-            color: colors.onTertiary,
-            fontWeight: FontWeight.w700,
-          ),
-          textAlign: TextAlign.center,
-        ),
       ),
     );
   }

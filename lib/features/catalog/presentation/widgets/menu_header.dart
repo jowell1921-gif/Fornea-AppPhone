@@ -1,3 +1,4 @@
+import 'package:fornea/core/motion/motion.dart';
 import 'package:fornea/core/theme/app_colors.dart';
 import 'package:fornea/core/theme/app_spacing.dart';
 import 'package:fornea/core/widgets/section_heading.dart';
@@ -36,10 +37,27 @@ class MenuHeader extends StatelessWidget {
               // Altura limitada para que los productos asomen sin tener que desplazarse mucho.
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxHeight: 150),
-                child: Image.asset(
-                  'assets/images/menu_banner.webp',
-                  // Decorativa, como en la web (alt vacío): los lectores de pantalla la saltan.
-                  excludeFromSemantics: true,
+                // Como en la web: crece al entrar (1,2 s) y después «respira» (8 s).
+                child: Entrance(
+                  duration: const Duration(milliseconds: 1200),
+                  builder: (t, child) => Opacity(
+                    opacity: t,
+                    child: Transform.scale(
+                      scale: 0.88 + 0.12 * t,
+                      child: child,
+                    ),
+                  ),
+                  child: LoopingMotion(
+                    period: const Duration(seconds: 8),
+                    builder: (t, child) =>
+                        Transform.scale(scale: 0.965 + 0.065 * t, child: child),
+                    child: Image.asset(
+                      'assets/images/menu_banner.webp',
+                      // Decorativa, como en la web (alt vacío): los lectores de pantalla la
+                      // saltan.
+                      excludeFromSemantics: true,
+                    ),
+                  ),
                 ),
               ),
             ),

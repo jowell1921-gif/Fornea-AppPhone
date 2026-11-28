@@ -5,10 +5,7 @@ import 'package:fornea/core/widgets/section_heading.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// Presentación breve de FORNEA CLUB, como en la web.
-///
-/// Usa el texto genérico de la web; los datos reales del programa (puntos por euro y
-/// recompensas) se añadirán con la funcionalidad de fidelización (tarea 4.6).
+/// Presentación breve de FORNEA CLUB, como en la web. Lleva a la pantalla del club.
 class ClubTeaser extends StatelessWidget {
   const ClubTeaser({super.key});
 
@@ -44,8 +41,7 @@ class ClubTeaser extends StatelessWidget {
                 backgroundColor: AppColors.gold,
                 foregroundColor: AppColors.charcoal,
               ),
-              // El club vivirá en Perfil (tarea 4.6).
-              onPressed: () => context.go(AppRoutes.profile),
+              onPressed: () => context.push(AppRoutes.club),
               icon: const Icon(Icons.card_giftcard),
               label: const Text('DESCUBRIR EL CLUB'),
             ),

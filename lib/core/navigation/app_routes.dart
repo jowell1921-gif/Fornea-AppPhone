@@ -11,6 +11,9 @@ abstract final class AppRoutes {
   static const String productPattern = '/product/:id';
   static String product(String id) => '/product/${Uri.encodeComponent(id)}';
 
+  /// FORNEA CLUB (pantalla completa, se abre desde Inicio y Perfil).
+  static const String club = '/club';
+
   /// Solo existe en modo debug.
   static const String devComponents = '/dev/components';
 }

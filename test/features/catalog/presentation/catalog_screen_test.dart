@@ -5,8 +5,10 @@ import 'package:fornea/features/catalog/presentation/catalog_screen.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../helpers/fake_api.dart';
+import '../../../helpers/reduce_motion.dart';
 
 Future<void> _pumpCatalog(WidgetTester tester, FakeHttpAdapter adapter) async {
+  reduceMotion(tester);
   await tester.pumpWidget(
     ProviderScope(
       // Sin reintentos automáticos: la prueba controla cuándo se reintenta.
