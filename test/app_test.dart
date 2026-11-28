@@ -19,10 +19,12 @@ Future<void> pumpApp(WidgetTester tester) async {
 }
 
 void main() {
-  testWidgets('la app arranca en Inicio con la marca FORNEA', (tester) async {
+  testWidgets('la app arranca en Inicio con la cabecera de marca', (
+    tester,
+  ) async {
     await pumpApp(tester);
 
-    expect(find.text('FORNEA'), findsOneWidget);
+    expect(find.text('PIZZERÍA · RECOGIDA Y DOMICILIO'), findsOneWidget);
     expect(find.byType(NavigationBar), findsOneWidget);
   });
 
@@ -39,6 +41,6 @@ void main() {
 
     await tester.tap(find.text('Inicio'));
     await tester.pumpAndSettle();
-    expect(find.text('Bienvenido a FORNEA'), findsOneWidget);
+    expect(find.text('PIZZERÍA · RECOGIDA Y DOMICILIO'), findsOneWidget);
   });
 }

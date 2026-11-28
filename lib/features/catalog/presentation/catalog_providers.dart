@@ -14,3 +14,14 @@ final categoriesProvider = FutureProvider<List<Category>>(
 final productsProvider = FutureProvider<List<Product>>(
   (ref) => ref.watch(catalogRepositoryProvider).fetchProducts(),
 );
+
+/// «Nuestros favoritos» de Inicio: los destacados que se pueden pedir, como máximo 4
+/// (mismo criterio que la web). Se deriva de [productsProvider], así que no hace otra petición.
+final favouriteProductsProvider = Provider<AsyncValue<List<Product>>>(
+  (ref) => ref
+      .watch(productsProvider)
+      .whenData(
+        (products) =>
+            products.where((p) => p.popular && p.available).take(4).toList(),
+      ),
+);

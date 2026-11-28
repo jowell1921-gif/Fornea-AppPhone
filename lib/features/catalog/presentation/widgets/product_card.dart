@@ -2,12 +2,13 @@ import 'package:fornea/core/formatting/money.dart';
 import 'package:fornea/core/theme/app_spacing.dart';
 import 'package:fornea/core/widgets/info_tag.dart';
 import 'package:fornea/core/widgets/product_image.dart';
+import 'package:fornea/features/catalog/domain/product.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Tarjeta de producto de la carta, con la misma información que la tarjeta de la web.
 ///
-/// Recibe datos sueltos en lugar del modelo `Product` para no depender de él hasta que lo
-/// definamos con la API real (Fase 5); entonces solo cambiará quién la construye.
+/// [ProductCard.fromProduct] la construye a partir del modelo de la API; el constructor con
+/// datos sueltos se mantiene para el catálogo de componentes y las pruebas.
 class ProductCard extends StatelessWidget {
   const ProductCard({
     required this.name,
@@ -22,6 +23,17 @@ class ProductCard extends StatelessWidget {
     this.available = true,
     super.key,
   });
+
+  ProductCard.fromProduct(Product product, {required this.onTap, super.key})
+    : name = product.name,
+      description = product.description,
+      price = product.price,
+      imageUrl = product.image?.url,
+      imageAlt = product.image?.alt ?? '',
+      ingredients = product.ingredients,
+      allergens = [for (final allergen in product.allergens) allergen.name],
+      vegetarian = product.vegetarian,
+      available = product.available;
 
   final String name;
   final String description;

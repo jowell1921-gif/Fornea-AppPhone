@@ -84,16 +84,8 @@ class _CatalogList extends StatelessWidget {
           for (final product in items)
             Padding(
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-              child: ProductCard(
-                name: product.name,
-                description: product.description,
-                price: product.price,
-                imageUrl: product.image?.url,
-                imageAlt: product.image?.alt ?? '',
-                ingredients: product.ingredients,
-                allergens: [for (final a in product.allergens) a.name],
-                vegetarian: product.vegetarian,
-                available: product.available,
+              child: ProductCard.fromProduct(
+                product,
                 // El detalle del producto llega en la tarea 4.4.
                 onTap: () {},
               ),

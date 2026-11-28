@@ -26,6 +26,8 @@ flutter:
   assets:
     - assets/fonts/inter/OFL.txt
     - assets/fonts/barlow_condensed/OFL.txt
+    # Imágenes de marca de la web (Pizzeria FORNO/frontend/public/image), incluidas en la app.
+    - assets/images/
 
   # Tipografías de marca incluidas en la app (no se descargan al abrirla).
   fonts:
