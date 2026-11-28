@@ -97,6 +97,19 @@ abstract final class AppTheme {
           borderSide: BorderSide(color: AppColors.input),
         ),
       ),
+      // Barra inferior blanca; la pestaña activa se marca con una píldora crema y texto en negrita.
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: AppColors.white,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: AppColors.cream,
+        labelTextStyle: WidgetStateProperty.resolveWith(
+          (states) => base.textTheme.labelMedium?.copyWith(
+            fontWeight: states.contains(WidgetState.selected)
+                ? FontWeight.w700
+                : FontWeight.w500,
+          ),
+        ),
+      ),
       dividerTheme: const DividerThemeData(color: AppColors.border),
     );
   }

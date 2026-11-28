@@ -1,10 +1,35 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fornea/app.dart';
+import 'package:material_ui/material_ui.dart';
+
+/// Arranca la app completa, igual que `main.dart`.
+Future<void> pumpApp(WidgetTester tester) async {
+  await tester.pumpWidget(const ProviderScope(child: ForneaApp()));
+  await tester.pumpAndSettle();
+}
 
 void main() {
-  testWidgets('la app arranca y muestra la marca FORNEA', (tester) async {
-    await tester.pumpWidget(const ForneaApp());
+  testWidgets('la app arranca en Inicio con la marca FORNEA', (tester) async {
+    await pumpApp(tester);
 
     expect(find.text('FORNEA'), findsOneWidget);
+    expect(find.byType(NavigationBar), findsOneWidget);
+  });
+
+  testWidgets('la barra inferior cambia de pestaña', (tester) async {
+    await pumpApp(tester);
+
+    await tester.tap(find.text('Carrito'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tu carrito está vacío'), findsOneWidget);
+
+    await tester.tap(find.text('Perfil'));
+    await tester.pumpAndSettle();
+    expect(find.text('Tu cuenta'), findsOneWidget);
+
+    await tester.tap(find.text('Inicio'));
+    await tester.pumpAndSettle();
+    expect(find.text('Bienvenido a FORNEA'), findsOneWidget);
   });
 }
