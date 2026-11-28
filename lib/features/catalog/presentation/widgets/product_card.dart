@@ -1,5 +1,6 @@
 import 'package:fornea/core/formatting/money.dart';
 import 'package:fornea/core/theme/app_spacing.dart';
+import 'package:fornea/core/widgets/dashed_outline.dart';
 import 'package:fornea/core/widgets/info_tag.dart';
 import 'package:fornea/core/widgets/product_image.dart';
 import 'package:fornea/features/catalog/domain/product.dart';
@@ -56,8 +57,15 @@ class ProductCard extends StatelessWidget {
       color: colors.onSurfaceVariant,
     );
 
-    return Card(
+    final card = Card(
+      // Como en la web: lo no disponible va sobre crema y con borde discontinuo (lo pinta
+      // [DashedOutline], por eso esta tarjeta no lleva borde propio).
       color: available ? null : colors.surfaceContainerLow,
+      shape: available
+          ? null
+          : const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(AppRadius.lg)),
+            ),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
@@ -145,6 +153,8 @@ class ProductCard extends StatelessWidget {
         ),
       ),
     );
+
+    return available ? card : DashedOutline(child: card);
   }
 }
 

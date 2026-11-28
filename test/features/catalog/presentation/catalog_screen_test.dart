@@ -33,9 +33,10 @@ final Map<String, FakeResponse> _menu = {
     status: 200,
     body: {
       'data': [
-        productJson(id: 'p1', categoryId: 'c1', name: 'Margherita'),
+        for (var i = 1; i <= 6; i++)
+          productJson(id: 'p$i', categoryId: 'c1', name: 'Pizza $i'),
         productJson(
-          id: 'p2',
+          id: 'b1',
           categoryId: 'c2',
           name: 'Agua',
           overrides: {'available': false},
@@ -45,16 +46,35 @@ final Map<String, FakeResponse> _menu = {
   ),
 };
 
+/// Las secciones fuera de pantalla existen pero no se «ven»: se buscan sin ese filtro.
+Finder _anywhere(String text) => find.text(text, skipOffstage: false);
+
 void main() {
   testWidgets('muestra los productos agrupados por categoría', (tester) async {
     await _pumpCatalog(tester, FakeHttpAdapter({..._menu}));
 
-    expect(find.text('PIZZAS'), findsOneWidget);
-    expect(find.text('Margherita'), findsOneWidget);
+    expect(find.text('NUESTRA CARTA'), findsOneWidget);
+    expect(_anywhere('PIZZAS'), findsOneWidget);
+    expect(_anywhere('Pizza 1'), findsOneWidget);
+    expect(_anywhere('BEBIDAS'), findsOneWidget);
+    expect(_anywhere('No disponible'), findsOneWidget);
+    // Una categoría sin productos no tiene sección ni botón en la barra.
+    expect(_anywhere('POSTRES'), findsNothing);
+    expect(_anywhere('Postres'), findsNothing);
+  });
+
+  testWidgets('pulsar una categoría de la barra lleva a su sección', (
+    tester,
+  ) async {
+    await _pumpCatalog(tester, FakeHttpAdapter({..._menu}));
+    expect(find.text('BEBIDAS'), findsNothing);
+
+    await tester.tap(find.widgetWithText(OutlinedButton, 'Bebidas'));
+    await tester.pumpAndSettle();
+
     expect(find.text('BEBIDAS'), findsOneWidget);
-    expect(find.text('No disponible'), findsOneWidget);
-    // Una categoría sin productos no se muestra.
-    expect(find.text('POSTRES'), findsNothing);
+    // La barra sigue fija arriba.
+    expect(find.widgetWithText(OutlinedButton, 'Pizzas'), findsOneWidget);
   });
 
   testWidgets('sin conexión muestra el error y «Reintentar» vuelve a cargar', (
@@ -69,6 +89,21 @@ void main() {
     await tester.tap(find.text('Reintentar'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Margherita'), findsOneWidget);
+    expect(find.text('NUESTRA CARTA'), findsOneWidget);
+  });
+
+  testWidgets('si falla una recarga se mantiene la carta y se avisa', (
+    tester,
+  ) async {
+    final adapter = FakeHttpAdapter({..._menu});
+    await _pumpCatalog(tester, adapter);
+
+    adapter.routes.clear();
+    await tester.fling(find.text('NUESTRA CARTA'), const Offset(0, 400), 1000);
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('No hemos podido conectar'), findsOneWidget);
+    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.text('NUESTRA CARTA'), findsOneWidget);
   });
 }

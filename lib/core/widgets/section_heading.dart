@@ -1,19 +1,22 @@
 import 'package:fornea/core/theme/app_spacing.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// Encabezado de sección como el de la web: antetítulo pequeño, título y una acción opcional
-/// a la derecha (por ejemplo, «Ver toda la carta»).
+/// Encabezado de sección como el de la web: antetítulo opcional, título en mayúsculas (la web
+/// los pone así por CSS), descripción opcional y una acción a la derecha (por ejemplo,
+/// «Ver carta»).
 class SectionHeading extends StatelessWidget {
   const SectionHeading({
-    required this.eyebrow,
     required this.title,
+    this.eyebrow,
+    this.description,
     this.action,
     this.onDark = false,
     super.key,
   });
 
-  final String eyebrow;
   final String title;
+  final String? eyebrow;
+  final String? description;
   final Widget? action;
 
   /// Colores para fondos oscuros (antetítulo dorado y título crema).
@@ -23,6 +26,8 @@ class SectionHeading extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
+    final eyebrow = this.eyebrow;
+    final description = this.description;
     final action = this.action;
 
     return Row(
@@ -32,21 +37,37 @@ class SectionHeading extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                eyebrow.toUpperCase(),
-                style: theme.textTheme.labelMedium?.copyWith(
-                  color: onDark ? colors.tertiary : colors.primary,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 1.5,
+              if (eyebrow != null) ...[
+                Text(
+                  eyebrow.toUpperCase(),
+                  style: theme.textTheme.labelMedium?.copyWith(
+                    color: onDark ? colors.tertiary : colors.primary,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                const SizedBox(height: AppSpacing.xs),
+              ],
+              Semantics(
+                header: true,
+                child: Text(
+                  title.toUpperCase(),
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    color: onDark ? colors.primaryContainer : null,
+                  ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.xs),
-              Text(
-                title,
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  color: onDark ? colors.primaryContainer : null,
+              if (description != null) ...[
+                const SizedBox(height: AppSpacing.xs),
+                Text(
+                  description,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: onDark
+                        ? colors.primaryContainer.withValues(alpha: 0.85)
+                        : colors.onSurfaceVariant,
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ),
