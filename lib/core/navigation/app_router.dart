@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fornea/core/navigation/app_routes.dart';
 import 'package:fornea/core/navigation/main_shell.dart';
 import 'package:fornea/core/navigation/not_found_screen.dart';
+import 'package:fornea/dev/components_preview_screen.dart';
 import 'package:fornea/features/cart/presentation/cart_screen.dart';
 import 'package:fornea/features/catalog/presentation/catalog_screen.dart';
 import 'package:fornea/features/home/presentation/home_screen.dart';
@@ -30,6 +32,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           _tab(AppRoutes.profile, const ProfileScreen()),
         ],
       ),
+      // `kDebugMode` es una constante: en la compilación de publicación esta ruta y su pantalla
+      // se eliminan del binario.
+      if (kDebugMode)
+        GoRoute(
+          path: AppRoutes.devComponents,
+          builder: (context, state) => const ComponentsPreviewScreen(),
+        ),
     ],
   );
   ref.onDispose(router.dispose);

@@ -41,16 +41,25 @@ Antes de dar por terminada una tarea, los tres deben terminar sin errores.
 
 ```
 lib/
-├── main.dart     # arranque de la app
-└── app.dart      # widget raíz (tema y navegación)
-test/             # pruebas
-docs/             # documentación del proyecto
-android/  ios/    # proyectos nativos (identificador io.fornea.app)
+├── main.dart              # arranque: licencias de fuentes + ProviderScope
+├── app.dart               # widget raíz: tema y router
+├── core/                  # piezas compartidas por todas las funcionalidades
+│   ├── theme/             # colores, espaciados, tipografías y tema de Material 3
+│   ├── navigation/        # rutas, GoRouter (provider de Riverpod) y barra inferior
+│   ├── widgets/           # componentes comunes: estados vacío, carga y error, etiquetas, imagen
+│   └── formatting/        # formato de importes (solo presentación)
+├── features/              # una carpeta por funcionalidad
+│   ├── home/  catalog/  cart/  orders/  profile/
+│   │   └── presentation/  # pantallas y widgets (más adelante: data/ y domain/)
+└── dev/                   # pantallas SOLO de desarrollo (no se incluyen en la versión publicada)
+assets/fonts/              # Inter y Barlow Condensed con sus licencias OFL
+test/                      # pruebas, con la misma estructura que lib/
+docs/                      # documentación del proyecto
+android/  ios/             # proyectos nativos (identificador io.fornea.app)
 ```
 
-La arquitectura prevista (por funcionalidades, con MVVM y Riverpod) se describe en
-[`docs/auditoria-fase-0.md`](docs/auditoria-fase-0.md), apartado 6. Las carpetas `lib/core/` y
-`lib/features/` se irán creando a medida que se añada código.
+La arquitectura (por funcionalidades, con MVVM y Riverpod) se describe en
+[`docs/auditoria-fase-0.md`](docs/auditoria-fase-0.md), apartado 6.
 
 ## Documentación
 

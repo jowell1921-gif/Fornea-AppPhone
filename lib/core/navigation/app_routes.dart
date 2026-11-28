@@ -5,4 +5,7 @@ abstract final class AppRoutes {
   static const String cart = '/cart';
   static const String orders = '/orders';
   static const String profile = '/profile';
+
+  /// Solo existe en modo debug.
+  static const String devComponents = '/dev/components';
 }
