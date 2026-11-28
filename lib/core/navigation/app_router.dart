@@ -6,6 +6,7 @@ import 'package:fornea/core/navigation/not_found_screen.dart';
 import 'package:fornea/dev/components_preview_screen.dart';
 import 'package:fornea/features/cart/presentation/cart_screen.dart';
 import 'package:fornea/features/catalog/presentation/catalog_screen.dart';
+import 'package:fornea/features/catalog/presentation/product_detail/product_detail_screen.dart';
 import 'package:fornea/features/home/presentation/home_screen.dart';
 import 'package:fornea/features/orders/presentation/orders_screen.dart';
 import 'package:fornea/features/profile/presentation/profile_screen.dart';
@@ -31,6 +32,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           _tab(AppRoutes.orders, const OrdersScreen()),
           _tab(AppRoutes.profile, const ProfileScreen()),
         ],
+      ),
+      GoRoute(
+        path: AppRoutes.productPattern,
+        builder: (context, state) =>
+            ProductDetailScreen(productId: state.pathParameters['id']!),
       ),
       // `kDebugMode` es una constante: en la compilación de publicación esta ruta y su pantalla
       // se eliminan del binario.

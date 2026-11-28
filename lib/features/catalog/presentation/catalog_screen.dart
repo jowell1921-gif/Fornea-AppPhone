@@ -1,6 +1,7 @@
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:fornea/core/navigation/app_routes.dart';
 import 'package:fornea/core/network/error_messages.dart';
 import 'package:fornea/core/theme/app_spacing.dart';
 import 'package:fornea/core/widgets/dashed_outline.dart';
@@ -14,6 +15,7 @@ import 'package:fornea/features/catalog/presentation/catalog_providers.dart';
 import 'package:fornea/features/catalog/presentation/widgets/category_bar.dart';
 import 'package:fornea/features/catalog/presentation/widgets/menu_header.dart';
 import 'package:fornea/features/catalog/presentation/widgets/product_card.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Carta: cabecera, barra fija de categorías y productos reales del backend por categoría.
@@ -212,8 +214,7 @@ class _MenuSection extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: AppSpacing.sm),
             child: ProductCard.fromProduct(
               product,
-              // El detalle del producto llega en la tarea 4.4.
-              onTap: () {},
+              onTap: () => context.push(AppRoutes.product(product.id)),
             ),
           ),
       ],

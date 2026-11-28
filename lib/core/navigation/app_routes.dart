@@ -6,6 +6,11 @@ abstract final class AppRoutes {
   static const String orders = '/orders';
   static const String profile = '/profile';
 
+  /// Ficha de un producto. Fuera de las pestañas: se abre a pantalla completa, sin la barra
+  /// inferior, y se puede abrir desde cualquier pestaña.
+  static const String productPattern = '/product/:id';
+  static String product(String id) => '/product/${Uri.encodeComponent(id)}';
+
   /// Solo existe en modo debug.
   static const String devComponents = '/dev/components';
 }

@@ -16,6 +16,9 @@ class FakeHttpAdapter implements HttpClientAdapter {
   /// Rutas pedidas, en orden, para comprobar cuántas llamadas se hicieron.
   final List<String> requests = [];
 
+  /// Cuerpos enviados (en los `POST`), en el mismo orden que [requests].
+  final List<Object?> bodies = [];
+
   @override
   Future<ResponseBody> fetch(
     RequestOptions options,
@@ -23,6 +26,7 @@ class FakeHttpAdapter implements HttpClientAdapter {
     Future<void>? cancelFuture,
   ) async {
     requests.add(options.path);
+    bodies.add(options.data);
     final route = routes[options.path];
     if (route == null || route.body == null) {
       throw DioException.connectionError(
@@ -78,3 +82,58 @@ Map<String, Object?> productJson({
 
 Map<String, Object?> categoryJson({required String id, required String name}) =>
     {'id': id, 'slug': name.toLowerCase(), 'name': name, 'description': null};
+
+/// Grupo de opciones según el contrato; las opciones se crean con [optionJson].
+Map<String, Object?> optionGroupJson({
+  required String id,
+  required String name,
+  required List<Map<String, Object?>> options,
+  bool required = false,
+  int minSelect = 0,
+  int maxSelect = 1,
+}) => {
+  'id': id,
+  'name': name,
+  'kind': 'EXTRA',
+  'required': required,
+  'minSelect': minSelect,
+  'maxSelect': maxSelect,
+  'options': options,
+};
+
+Map<String, Object?> optionJson({
+  required String id,
+  required String name,
+  String priceDelta = '0.00',
+  bool isDefault = false,
+  bool available = true,
+}) => {
+  'id': id,
+  'name': name,
+  'priceDelta': priceDelta,
+  'isDefault': isDefault,
+  'available': available,
+};
+
+/// Respuesta de `POST /checkout/quote` con una sola línea (solo los campos que lee la app,
+/// más alguno de los que ignora).
+Map<String, Object?> quoteJson({
+  required String unitPrice,
+  required String lineTotal,
+}) => {
+  'data': {
+    'type': 'PICKUP',
+    'lines': [
+      {
+        'productId': 'p1',
+        'productName': 'Margherita',
+        'quantity': 1,
+        'notes': null,
+        'unitPrice': unitPrice,
+        'lineTotal': lineTotal,
+        'options': <Object?>[],
+      },
+    ],
+    'totals': {'total': lineTotal},
+  },
+};

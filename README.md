@@ -45,7 +45,18 @@ cd backend;  npm run dev             # API en http://localhost:4000
 cd frontend; npm run dev             # web en http://localhost:3000
 ```
 
-Para otro servidor (un móvil físico, producción…) se indican al compilar:
+**En un móvil Android real por cable USB** (depuración USB activada; en Xiaomi también «Instalar
+vía USB»), `10.0.2.2` no existe. Se crea un túnel por el cable para que el `localhost` del móvil sea
+el del PC, y se lanza indicando esas direcciones:
+
+```powershell
+adb devices                                    # muestra el número de serie del móvil
+adb reverse tcp:4000 tcp:4000                  # API (repetir al reconectar el cable)
+adb reverse tcp:3000 tcp:3000                  # web
+flutter run -d <serie> --dart-define=API_BASE_URL=http://localhost:4000/api/v1 --dart-define=WEB_BASE_URL=http://localhost:3000
+```
+
+Para otro servidor (producción…) se indican al compilar igual:
 `flutter run --dart-define=API_BASE_URL=https://… --dart-define=WEB_BASE_URL=https://…`.
 En la versión publicada son **obligatorias**. HTTP sin cifrar solo se permite en debug y solo hacia
 el PC de desarrollo (`android/app/src/debug/res/xml/network_security_config.xml`).

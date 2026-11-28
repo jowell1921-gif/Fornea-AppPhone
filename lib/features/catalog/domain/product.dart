@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:fornea/core/network/api_exception.dart';
 import 'package:fornea/core/network/json_parsing.dart';
 
@@ -184,6 +186,12 @@ class OptionGroup {
   final int minSelect;
   final int maxSelect;
   final List<ProductOption> options;
+
+  /// Se elige exactamente una (como un tamaño): se muestra como opción única.
+  bool get isSingleChoice => required && maxSelect == 1;
+
+  /// Mínimo de opciones a elegir, con la misma regla que el backend al validar.
+  int get minimumSelection => math.max(minSelect, required ? 1 : 0);
 }
 
 class ProductOption {

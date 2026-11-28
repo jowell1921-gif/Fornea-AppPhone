@@ -27,8 +27,7 @@ class FavouritesSection extends ConsumerWidget {
               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
               child: ProductCard.fromProduct(
                 product,
-                // Hasta tener el detalle (tarea 4.4) lleva a la carta.
-                onTap: () => context.go(AppRoutes.catalog),
+                onTap: () => context.push(AppRoutes.product(product.id)),
               ),
             ),
         ],

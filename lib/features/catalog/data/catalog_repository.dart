@@ -33,6 +33,12 @@ class CatalogRepository {
     (json) => Product.fromJson(json, resolveUrl: _resolveImageUrl),
   );
 
+  /// Un producto por su id (o su slug). Si no existe, la API responde `404`.
+  Future<Product> fetchProduct(String idOrSlug) async => Product.fromJson(
+    await _api.get('/products/${Uri.encodeComponent(idOrSlug)}'),
+    resolveUrl: _resolveImageUrl,
+  );
+
   /// Las imágenes que empiezan por `/` son relativas a la web; las demás ya son absolutas.
   String _resolveImageUrl(String url) =>
       url.startsWith('/') ? '$_webBaseUrl$url' : url;

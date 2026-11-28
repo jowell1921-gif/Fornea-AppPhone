@@ -28,3 +28,13 @@ String _groupThousands(String digits) {
   }
   return buffer.toString();
 }
+
+/// Suplemento de una opción para mostrar junto a su nombre: `"1.50"` → `+1,50 €`,
+/// `"-1.00"` → `-1,00 €`. Devuelve `null` si es cero (la web tampoco lo muestra).
+///
+/// Solo da formato al valor de la API; no suma nada.
+String? formatPriceDelta(String delta) {
+  final formatted = formatEuro(delta);
+  if (RegExp(r'^-?0+(\.0+)?$').hasMatch(delta.trim())) return null;
+  return formatted.startsWith('-') ? formatted : '+$formatted';
+}

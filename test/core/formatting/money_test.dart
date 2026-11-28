@@ -23,4 +23,10 @@ void main() {
       expect(() => formatEuro(invalid), throwsFormatException, reason: invalid);
     }
   });
+
+  test('suplementos: con signo y ocultos si son cero', () {
+    expect(formatPriceDelta('4.00'), '+4,00 €');
+    expect(formatPriceDelta('-1.50'), '-1,50 €');
+    expect(formatPriceDelta('0.00'), isNull);
+  });
 }

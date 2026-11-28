@@ -29,9 +29,16 @@ class ApiClient {
   final Dio _dio;
 
   /// `GET` que devuelve el contenido de `data`, sin convertir: cada repositorio lo interpreta.
-  Future<Object?> get(String path, {Map<String, Object?>? query}) async {
+  Future<Object?> get(String path, {Map<String, Object?>? query}) =>
+      _send(() => _dio.get<Object?>(path, queryParameters: query));
+
+  /// `POST` con un cuerpo JSON; devuelve el contenido de `data` igual que [get].
+  Future<Object?> post(String path, {Object? body}) =>
+      _send(() => _dio.post<Object?>(path, data: body));
+
+  Future<Object?> _send(Future<Response<Object?>> Function() request) async {
     try {
-      final response = await _dio.get<Object?>(path, queryParameters: query);
+      final response = await request();
       return switch (response.data) {
         {'data': final Object? data} => data,
         _ => throw const UnexpectedResponseException('Falta "data"'),
