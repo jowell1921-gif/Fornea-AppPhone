@@ -7,11 +7,11 @@ environment:
   sdk: ^3.14.0
 
 dependencies:
+  dio: ^5.11.1
   flutter:
     sdk: flutter
   flutter_riverpod: ^3.5.0
   go_router: ^18.1.4
-  intl: ^0.20.3
   material_ui: ^1.1.0
 
 dev_dependencies:

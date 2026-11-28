@@ -27,6 +27,29 @@ flutter run          # compila y abre la app en el emulador o el móvil conectad
 En VS Code basta con elegir el dispositivo en la barra de estado y pulsar **F5**. Con la app en marcha,
 al guardar un archivo se aplica la recarga en caliente.
 
+### Servidor al que se conecta
+
+La app usa la API de FORNEA. En **debug**, si no se indica otra cosa, se conecta al backend local
+del proyecto web visto desde el emulador (`10.0.2.2` es el `localhost` del PC):
+
+| Variable | Por defecto en debug | Para qué |
+|---|---|---|
+| `API_BASE_URL` | `http://10.0.2.2:4000/api/v1` | API REST |
+| `WEB_BASE_URL` | `http://10.0.2.2:3000` | Web: sirve las imágenes con rutas relativas (`/image/…`) |
+
+Antes de lanzar la app, arranca el backend y la web de `Pizzeria FORNO` (cada uno en su terminal):
+
+```powershell
+docker compose up -d                 # en Pizzeria FORNO (base de datos)
+cd backend;  npm run dev             # API en http://localhost:4000
+cd frontend; npm run dev             # web en http://localhost:3000
+```
+
+Para otro servidor (un móvil físico, producción…) se indican al compilar:
+`flutter run --dart-define=API_BASE_URL=https://… --dart-define=WEB_BASE_URL=https://…`.
+En la versión publicada son **obligatorias**. HTTP sin cifrar solo se permite en debug y solo hacia
+el PC de desarrollo (`android/app/src/debug/res/xml/network_security_config.xml`).
+
 ## Comandos de calidad
 
 | Comando | Qué hace |
