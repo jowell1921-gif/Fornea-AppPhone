@@ -51,6 +51,13 @@ class OptionSelection {
     (group) => _selectedIn(group).length >= group.minimumSelection,
   );
 
+  /// Opciones elegidas en el orden de la carta (grupo a grupo), para resumirlas en texto.
+  List<ProductOption> chosenIn(Product product) => [
+    for (final group in product.optionGroups)
+      for (final option in group.options)
+        if (isSelected(group, option)) option,
+  ];
+
   /// Ids de todas las opciones elegidas, lo único que se envía al servidor.
   List<String> get optionIds => [for (final ids in _byGroup.values) ...ids];
 }

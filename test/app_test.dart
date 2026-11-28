@@ -2,16 +2,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fornea/app.dart';
 import 'package:fornea/core/network/api_client.dart';
+import 'package:fornea/features/cart/data/cart_storage.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'helpers/fake_api.dart';
+import 'helpers/memory_cart_storage.dart';
 
 /// Arranca la app completa, igual que `main.dart`, pero sin red real.
 Future<void> pumpApp(WidgetTester tester) async {
   await tester.pumpWidget(
     ProviderScope(
       retry: (_, _) => null,
-      overrides: [dioProvider.overrideWithValue(fakeDio(FakeHttpAdapter({})))],
+      overrides: [
+        dioProvider.overrideWithValue(fakeDio(FakeHttpAdapter({}))),
+        cartStorageProvider.overrideWithValue(MemoryCartStorage()),
+      ],
       child: const ForneaApp(),
     ),
   );
@@ -33,7 +38,7 @@ void main() {
 
     await tester.tap(find.text('Carrito'));
     await tester.pumpAndSettle();
-    expect(find.text('Tu carrito está vacío'), findsOneWidget);
+    expect(find.text('Tu pedido está vacío'), findsOneWidget);
 
     await tester.tap(find.text('Perfil'));
     await tester.pumpAndSettle();

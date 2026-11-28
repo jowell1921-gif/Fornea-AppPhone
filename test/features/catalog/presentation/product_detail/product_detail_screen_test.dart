@@ -1,10 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fornea/core/network/api_client.dart';
+import 'package:fornea/features/cart/data/cart_storage.dart';
 import 'package:fornea/features/catalog/presentation/product_detail/product_detail_screen.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../helpers/fake_api.dart';
+import '../../../../helpers/memory_cart_storage.dart';
 
 Map<String, Object?> _pizza({bool available = true}) => productJson(
   id: 'p1',
@@ -30,6 +32,7 @@ Future<FakeHttpAdapter> _pumpDetail(
   WidgetTester tester, {
   Map<String, Object?>? product,
   FakeResponse? quote,
+  MemoryCartStorage? cart,
 }) async {
   // Tamaño de un móvil real (1080×2400), para que la ficha entera quepa en pantalla.
   tester.view
@@ -43,7 +46,10 @@ Future<FakeHttpAdapter> _pumpDetail(
   await tester.pumpWidget(
     ProviderScope(
       retry: (_, _) => null,
-      overrides: [dioProvider.overrideWithValue(fakeDio(adapter))],
+      overrides: [
+        dioProvider.overrideWithValue(fakeDio(adapter)),
+        cartStorageProvider.overrideWithValue(cart ?? MemoryCartStorage()),
+      ],
       child: const MaterialApp(home: ProductDetailScreen(productId: 'p1')),
     ),
   );
@@ -62,7 +68,10 @@ void main() {
       tester,
       quote: (
         status: 200,
-        body: quoteJson(unitPrice: '9.50', lineTotal: '9.50'),
+        body: quoteJson(
+          lines: [quoteLineJson(productId: 'p1', lineTotal: '9.50')],
+          total: '9.50',
+        ),
       ),
     );
 
@@ -72,6 +81,34 @@ void main() {
     expect(find.text('+4,00 €'), findsOneWidget);
     expect(find.text('AÑADIR · 9,50 €'), findsOneWidget);
     expect(adapter.requests, contains('/checkout/quote'));
+  });
+
+  testWidgets('«Añadir» guarda la configuración en el carrito', (tester) async {
+    final cart = MemoryCartStorage();
+    await _pumpDetail(
+      tester,
+      cart: cart,
+      quote: (
+        status: 200,
+        body: quoteJson(
+          lines: [quoteLineJson(productId: 'p1', lineTotal: '13.50')],
+          total: '13.50',
+        ),
+      ),
+    );
+
+    await tester.tap(find.text('Familiar'));
+    await tester.enterText(find.byType(TextField), 'sin albahaca');
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pumpAndSettle();
+    await tester.tap(find.textContaining('AÑADIR ·'));
+    await tester.pumpAndSettle();
+
+    final line = cart.saved.single;
+    expect(line.item.optionIds, ['f']);
+    expect(line.item.notes, 'sin albahaca');
+    expect(line.optionSummary, 'Familiar');
+    expect(find.text('Margherita añadido a tu pedido'), findsOneWidget);
   });
 
   testWidgets('si el servidor rechaza la selección no deja añadir', (

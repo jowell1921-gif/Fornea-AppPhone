@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fornea/core/network/api_client.dart';
-import 'package:fornea/features/checkout/domain/line_quote.dart';
+import 'package:fornea/features/checkout/domain/quote.dart';
 
 final checkoutRepositoryProvider = Provider<CheckoutRepository>(
   (ref) => CheckoutRepository(ref.watch(apiClientProvider)),
@@ -13,17 +13,17 @@ class CheckoutRepository {
 
   final ApiClient _api;
 
-  /// Precio de una sola línea. El tipo de pedido no cambia el precio de los productos (solo el
-  /// envío), así que se usa recogida. El servidor también valida las opciones: si no cumplen
-  /// las reglas del producto, responde `422` (`INVALID_OPTIONS`, `OPTION_UNAVAILABLE`…).
-  Future<LineQuote> quoteLine(LineQuoteRequest line) async =>
-      LineQuote.fromQuoteJson(
-        await _api.post(
-          '/checkout/quote',
-          body: {
-            'items': [line.toJson()],
-            'type': 'PICKUP',
-          },
-        ),
-      );
+  /// Presupuesto de [items]. Por ahora siempre como recogida: el tipo de pedido solo cambia el
+  /// envío, que se elegirá al finalizar el pedido (Fase 6). El servidor también valida cada
+  /// línea: si algo no cumple las reglas, responde `422` (`INVALID_OPTIONS`,
+  /// `PRODUCT_UNAVAILABLE`…).
+  Future<Quote> quote(List<QuoteItem> items) async => Quote.fromJson(
+    await _api.post(
+      '/checkout/quote',
+      body: {
+        'items': [for (final item in items) item.toJson()],
+        'type': 'PICKUP',
+      },
+    ),
+  );
 }

@@ -7,7 +7,7 @@ import 'package:fornea/core/widgets/quantity_stepper.dart';
 import 'package:fornea/features/cart/domain/cart_limits.dart';
 import 'package:fornea/features/catalog/domain/product.dart';
 import 'package:fornea/features/catalog/presentation/product_detail/line_price_provider.dart';
-import 'package:fornea/features/checkout/domain/line_quote.dart';
+import 'package:fornea/features/checkout/domain/quote.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Barra fija al pie de la ficha: cantidad y «Añadir al pedido» con el precio que calcula el
@@ -56,7 +56,7 @@ class AddToOrderBar extends ConsumerWidget {
   }
 
   Widget _content(BuildContext context, WidgetRef ref) {
-    final request = LineQuoteRequest(
+    final request = QuoteItem(
       productId: product.id,
       optionIds: optionIds,
       quantity: quantity,

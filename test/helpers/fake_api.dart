@@ -115,25 +115,50 @@ Map<String, Object?> optionJson({
   'available': available,
 };
 
-/// Respuesta de `POST /checkout/quote` con una sola línea (solo los campos que lee la app,
-/// más alguno de los que ignora).
+/// Respuesta de `POST /checkout/quote` (cuerpo completo con `data`).
 Map<String, Object?> quoteJson({
-  required String unitPrice,
-  required String lineTotal,
+  required List<Map<String, Object?>> lines,
+  required String total,
+  List<Map<String, Object?>> discounts = const [],
 }) => {
   'data': {
     'type': 'PICKUP',
-    'lines': [
-      {
-        'productId': 'p1',
-        'productName': 'Margherita',
-        'quantity': 1,
-        'notes': null,
-        'unitPrice': unitPrice,
-        'lineTotal': lineTotal,
-        'options': <Object?>[],
-      },
-    ],
-    'totals': {'total': lineTotal},
+    'lines': lines,
+    'discounts': discounts,
+    'totals': {
+      'subtotal': total,
+      'discount': '0.00',
+      'deliveryFee': '0.00',
+      'tax': '0.00',
+      'total': total,
+    },
+    'delivery': null,
+    'estimatedMinutes': 20,
+    'pointsToEarn': 0,
   },
+};
+
+/// Una línea del presupuesto, tal como la devuelve el servidor.
+Map<String, Object?> quoteLineJson({
+  required String productId,
+  required String lineTotal,
+  List<String> optionIds = const [],
+  int quantity = 1,
+  String? notes,
+}) => {
+  'productId': productId,
+  'productName': 'Producto $productId',
+  'quantity': quantity,
+  'notes': notes,
+  'unitPrice': lineTotal,
+  'lineTotal': lineTotal,
+  'options': [
+    for (final id in optionIds)
+      {
+        'optionId': id,
+        'group': 'Grupo',
+        'name': 'Opción $id',
+        'priceDelta': '0.00',
+      },
+  ],
 };

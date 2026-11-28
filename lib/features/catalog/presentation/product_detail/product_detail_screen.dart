@@ -10,11 +10,15 @@ import 'package:fornea/core/widgets/error_view.dart';
 import 'package:fornea/core/widgets/info_tag.dart';
 import 'package:fornea/core/widgets/loading_view.dart';
 import 'package:fornea/core/widgets/product_image.dart';
+import 'package:fornea/features/cart/domain/cart_limits.dart';
+import 'package:fornea/features/cart/domain/cart_line.dart';
+import 'package:fornea/features/cart/presentation/cart_controller.dart';
 import 'package:fornea/features/catalog/domain/option_selection.dart';
 import 'package:fornea/features/catalog/domain/product.dart';
 import 'package:fornea/features/catalog/presentation/catalog_providers.dart';
 import 'package:fornea/features/catalog/presentation/product_detail/add_to_order_bar.dart';
 import 'package:fornea/features/catalog/presentation/product_detail/option_group_field.dart';
+import 'package:fornea/features/checkout/domain/quote.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -53,16 +57,16 @@ class ProductDetailScreen extends ConsumerWidget {
 
 /// La ficha con su estado local: opciones elegidas, cantidad y nota. Es estado de la pantalla
 /// (como un formulario): desaparece al cerrarla, igual que en la web.
-class _ProductDetail extends StatefulWidget {
+class _ProductDetail extends ConsumerStatefulWidget {
   const _ProductDetail({required this.product});
 
   final Product product;
 
   @override
-  State<_ProductDetail> createState() => _ProductDetailState();
+  ConsumerState<_ProductDetail> createState() => _ProductDetailState();
 }
 
-class _ProductDetailState extends State<_ProductDetail> {
+class _ProductDetailState extends ConsumerState<_ProductDetail> {
   late OptionSelection _selection = OptionSelection.defaults(widget.product);
   int _quantity = 1;
   final _notes = TextEditingController();
@@ -130,14 +134,61 @@ class _ProductDetailState extends State<_ProductDetail> {
           selectionComplete: _selection.isCompleteFor(product),
           quantity: _quantity,
           onQuantityChanged: (value) => setState(() => _quantity = value),
-          // El carrito se construye en la tarea 4.5; hasta entonces solo se avisa.
-          onAdd: () => ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('El carrito llegará en la próxima tarea (4.5).'),
-            ),
-          ),
+          onAdd: _addToCart,
         ),
       ],
+    );
+  }
+
+  /// Añade la configuración al carrito, cierra la ficha y avisa con acceso directo al pedido
+  /// (en la web se cierra la ventana y se abre el panel del carrito).
+  Future<void> _addToCart() async {
+    final product = widget.product;
+    final added = await ref
+        .read(cartProvider.notifier)
+        .add(
+          CartLine(
+            item: QuoteItem(
+              productId: product.id,
+              optionIds: _selection.optionIds,
+              quantity: _quantity,
+              notes: _notes.text,
+            ),
+            name: product.name,
+            imageUrl: product.image?.url,
+            imageAlt: product.image?.alt ?? product.name,
+            optionSummary: [
+              for (final option in _selection.chosenIn(product)) option.name,
+            ].join(', '),
+          ),
+        );
+    if (!mounted) return;
+
+    // Se guardan antes de cerrar la ficha: después, este `context` ya no estará en pantalla.
+    final messenger = ScaffoldMessenger.of(context);
+    final router = GoRouter.maybeOf(context);
+    if (!added) {
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Tu pedido ya tiene $maxCartLines productos distintos, el máximo.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    await Navigator.of(context).maybePop();
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text('${product.name} añadido a tu pedido'),
+        action: router == null
+            ? null
+            : SnackBarAction(
+                label: 'Ver pedido',
+                onPressed: () => router.go(AppRoutes.cart),
+              ),
+      ),
     );
   }
 }

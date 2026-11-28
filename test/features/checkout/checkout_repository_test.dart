@@ -2,39 +2,70 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fornea/core/network/api_client.dart';
 import 'package:fornea/core/network/api_exception.dart';
 import 'package:fornea/features/checkout/data/checkout_repository.dart';
-import 'package:fornea/features/checkout/domain/line_quote.dart';
+import 'package:fornea/features/checkout/domain/quote.dart';
 
 import '../../helpers/fake_api.dart';
 
 void main() {
   test(
-    'envía solo ids y cantidad, y lee el precio que calcula el servidor',
+    'envía solo ids, cantidades y notas, y lee los importes del servidor',
     () async {
       final adapter = FakeHttpAdapter({
         '/checkout/quote': (
           status: 200,
-          body: quoteJson(unitPrice: '13.50', lineTotal: '27.00'),
+          body: quoteJson(
+            lines: [
+              quoteLineJson(
+                productId: 'p1',
+                optionIds: ['a', 'b'],
+                quantity: 2,
+                lineTotal: '27.00',
+              ),
+            ],
+            total: '27.00',
+          ),
         ),
       });
       final repository = CheckoutRepository(ApiClient(fakeDio(adapter)));
 
-      final quote = await repository.quoteLine(
-        LineQuoteRequest(
+      final quote = await repository.quote([
+        QuoteItem(
           productId: 'p1',
           optionIds: const ['b', 'a'],
           quantity: 2,
+          notes: ' sin albahaca ',
         ),
-      );
+        QuoteItem(
+          productId: 'p2',
+          optionIds: const [],
+          quantity: 1,
+          notes: '  ',
+        ),
+      ]);
 
-      expect(quote.unitPrice, '13.50');
-      expect(quote.lineTotal, '27.00');
+      expect(quote.totals.total, '27.00');
+      expect(
+        quote
+            .lineFor(
+              QuoteItem(
+                productId: 'p1',
+                optionIds: const ['a', 'b'],
+                quantity: 2,
+              ),
+            )
+            ?.lineTotal,
+        '27.00',
+      );
       expect(adapter.bodies.single, {
         'items': [
           {
             'productId': 'p1',
             'quantity': 2,
             'optionIds': ['a', 'b'],
+            'notes': 'sin albahaca',
           },
+          // Una nota vacía no se envía.
+          {'productId': 'p2', 'quantity': 1, 'optionIds': <String>[]},
         ],
         'type': 'PICKUP',
       });
@@ -58,9 +89,9 @@ void main() {
       final repository = CheckoutRepository(ApiClient(fakeDio(adapter)));
 
       expect(
-        repository.quoteLine(
-          LineQuoteRequest(productId: 'p1', optionIds: const [], quantity: 1),
-        ),
+        repository.quote([
+          QuoteItem(productId: 'p1', optionIds: const [], quantity: 1),
+        ]),
         throwsA(
           isA<ServerException>()
               .having((e) => e.statusCode, 'statusCode', 422)
@@ -70,18 +101,10 @@ void main() {
     },
   );
 
-  test('dos peticiones con las mismas opciones en otro orden son iguales', () {
+  test('dos líneas con las mismas opciones en otro orden son iguales', () {
     expect(
-      LineQuoteRequest(
-        productId: 'p1',
-        optionIds: const ['a', 'b'],
-        quantity: 1,
-      ),
-      LineQuoteRequest(
-        productId: 'p1',
-        optionIds: const ['b', 'a'],
-        quantity: 1,
-      ),
+      QuoteItem(productId: 'p1', optionIds: const ['a', 'b'], quantity: 1),
+      QuoteItem(productId: 'p1', optionIds: const ['b', 'a'], quantity: 1),
     );
   });
 }
